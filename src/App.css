@@ -411,6 +411,281 @@
   color: var(--color-aqua);
 }
 
+.questions-section {
+  padding: 128px 0;
+  background:
+    radial-gradient(circle at 12% 20%, rgba(16, 188, 235, 0.08), transparent 24%),
+    radial-gradient(circle at 88% 82%, rgba(213, 162, 31, 0.08), transparent 22%), #f4f8f8;
+}
+
+.questions-layout {
+  display: grid;
+  grid-template-columns: minmax(300px, 0.72fr) minmax(0, 1.28fr);
+  gap: 100px;
+  align-items: start;
+}
+
+.questions-copy {
+  position: sticky;
+  top: 130px;
+}
+
+.questions-copy h2 {
+  max-width: 560px;
+  margin: 0;
+  color: var(--color-navy);
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(2.8rem, 4.5vw, 4.7rem);
+  line-height: 1.04;
+  font-weight: 400;
+  letter-spacing: -0.045em;
+}
+
+.questions-copy > p:last-child {
+  max-width: 530px;
+  margin: 28px 0 0;
+  color: var(--color-muted);
+  font-size: 1.04rem;
+  line-height: 1.72;
+}
+
+.questions-list {
+  border-top: 1px solid var(--color-line);
+}
+
+.question-row {
+  display: grid;
+  grid-template-columns: 68px 1fr;
+  gap: 26px;
+  padding: 34px 0 38px;
+  border-bottom: 1px solid var(--color-line);
+}
+
+.question-number {
+  padding-top: 5px;
+  color: var(--color-aqua);
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+
+.question-row h3 {
+  margin: 0;
+  color: var(--color-navy);
+  font-size: 1.48rem;
+  font-weight: 750;
+}
+
+.question-row p {
+  max-width: 650px;
+  margin: 12px 0 0;
+  color: var(--color-muted);
+  font-size: 0.97rem;
+  line-height: 1.68;
+}
+
+.markets-story {
+  padding: 126px 0 0;
+  background: #fbfdfc;
+}
+
+.markets-heading {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 0.72fr);
+  gap: 72px;
+  align-items: end;
+  padding-bottom: 86px;
+}
+
+.markets-heading h2 {
+  max-width: 760px;
+  margin: 0;
+  color: var(--color-navy);
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(2.8rem, 4.5vw, 4.8rem);
+  line-height: 1.04;
+  font-weight: 400;
+  letter-spacing: -0.045em;
+}
+
+.markets-heading > p {
+  margin: 0 0 4px;
+  color: var(--color-muted);
+  font-size: 1.04rem;
+  line-height: 1.72;
+}
+
+.markets-story-shell {
+  position: relative;
+  background: #0a1420;
+}
+
+.markets-stage {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  background: #0a1420;
+}
+
+.markets-visual {
+  position: relative;
+  width: 100%;
+  height: calc(100vh - 88px);
+  overflow: hidden;
+  background: #0a1420;
+}
+
+.market-scene {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transform: scale(1.025);
+  transition:
+    opacity 700ms ease,
+    transform 1000ms ease;
+}
+
+.market-scene.is-active {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.market-scene-image,
+.market-collage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.market-scene-image {
+  object-fit: cover;
+}
+
+.market-scene-image-irrigated {
+  object-position: 50% 56%;
+}
+
+.market-collage {
+  display: flex;
+  overflow: hidden;
+}
+
+.market-collage-image {
+  min-width: 0;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Row crops */
+.market-collage-row-crops .market-collage-image-1 {
+  width: 30%;
+}
+
+.market-collage-row-crops .market-collage-image-2 {
+  width: 25%;
+}
+
+.market-collage-row-crops .market-collage-image-3 {
+  width: 20%;
+}
+
+.market-collage-row-crops .market-collage-image-4 {
+  width: 25%;
+}
+
+/* Specialty crops */
+.market-collage-specialty-crops .market-collage-image-1 {
+  width: 21%;
+}
+
+.market-collage-specialty-crops .market-collage-image-2 {
+  width: 16%;
+}
+
+.market-collage-specialty-crops .market-collage-image-3 {
+  width: 17%;
+}
+
+.market-collage-specialty-crops .market-collage-image-4 {
+  width: 20%;
+}
+
+.market-collage-specialty-crops .market-collage-image-5 {
+  width: 13%;
+}
+
+.market-collage-specialty-crops .market-collage-image-6 {
+  width: 13%;
+}
+
+/* Vineyards and permanent crops */
+.market-collage-vineyard-and-perm .market-collage-image-1 {
+  width: 28%;
+}
+
+.market-collage-vineyard-and-perm .market-collage-image-2 {
+  width: 17%;
+}
+
+.market-collage-vineyard-and-perm .market-collage-image-3 {
+  width: 32%;
+}
+
+.market-collage-vineyard-and-perm .market-collage-image-4 {
+  width: 23%;
+}
+
+.market-overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(4, 11, 18, 0.76) 0%,
+      rgba(4, 11, 18, 0.42) 36%,
+      rgba(4, 11, 18, 0.08) 70%
+    ),
+    linear-gradient(0deg, rgba(4, 11, 18, 0.52) 0%, transparent 42%);
+}
+
+.market-copy {
+  position: absolute;
+  left: 56px;
+  bottom: 58px;
+  z-index: 2;
+  max-width: 560px;
+  color: white;
+}
+
+.market-label {
+  display: block;
+  margin-bottom: 12px;
+  color: var(--color-aqua);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.market-copy h3 {
+  margin: 0;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(2.8rem, 4vw, 5.4rem);
+  line-height: 0.98;
+  font-weight: 400;
+  letter-spacing: -0.045em;
+}
+
+.market-copy p {
+  max-width: 540px;
+  margin: 18px 0 0;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 1rem;
+  line-height: 1.65;
+}
+
 .placeholder-section {
   min-height: 420px;
   display: grid;
@@ -425,6 +700,75 @@
   font-size: 0.9rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
+}
+
+.floating-controls {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.floating-control {
+  min-height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 0 18px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 750;
+  cursor: pointer;
+  box-shadow: 0 12px 34px rgba(4, 11, 18, 0.18);
+  backdrop-filter: blur(12px);
+  transition:
+    transform 180ms ease,
+    background 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.floating-control:hover {
+  transform: translateY(-2px);
+}
+
+.exit-story-button {
+  color: white;
+  background: rgba(10, 20, 32, 0.9);
+}
+
+.exit-story-button:hover {
+  background: var(--color-navy);
+}
+
+.back-to-top-button {
+  color: var(--color-navy);
+  background: rgba(255, 255, 255, 0.92);
+  border-color: rgba(16, 36, 45, 0.12);
+}
+
+.back-to-top-button:hover {
+  background: white;
+  box-shadow: 0 14px 38px rgba(4, 11, 18, 0.16);
+}
+
+@media (min-width: 1081px) {
+  .markets-triggers {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .market-trigger {
+    visibility: hidden;
+  }
 }
 
 @media (max-width: 1080px) {
@@ -465,6 +809,55 @@
 
   .services-lede {
     max-width: 720px;
+  }
+
+  .questions-layout {
+    grid-template-columns: 1fr;
+    gap: 56px;
+  }
+
+  .questions-copy {
+    position: static;
+  }
+
+  .markets-heading {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .markets-heading > p {
+    max-width: 720px;
+  }
+
+  .markets-story-shell {
+    display: block;
+    min-height: auto;
+    background: #0a1420;
+  }
+
+  .markets-triggers {
+    display: none;
+  }
+
+  .markets-visual {
+    position: static;
+    height: auto;
+    overflow: visible;
+  }
+
+  .market-scene {
+    position: relative;
+    inset: auto;
+    min-height: 620px;
+    opacity: 1;
+    transform: none;
+    margin-bottom: 1px;
+  }
+
+  .market-scene-image,
+  .market-collage {
+    position: absolute;
+    inset: 0;
   }
 }
 
@@ -573,6 +966,68 @@
   .service-link {
     left: 28px;
     bottom: 26px;
+  }
+
+  .questions-section {
+    padding: 82px 0;
+  }
+
+  .question-row {
+    grid-template-columns: 48px 1fr;
+    gap: 18px;
+    padding: 28px 0 30px;
+  }
+
+  .markets-story {
+    padding-top: 82px;
+  }
+
+  .markets-heading {
+    padding-bottom: 54px;
+  }
+
+  .market-scene {
+    min-height: 560px;
+  }
+
+  .market-copy {
+    left: 28px;
+    right: 28px;
+    bottom: 34px;
+  }
+
+  .market-copy h3 {
+    font-size: clamp(2.6rem, 12vw, 4rem);
+  }
+
+  .market-collage {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .market-collage-image {
+    width: 100% !important;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .floating-controls {
+    right: 16px;
+    bottom: 16px;
+  }
+
+  .floating-control {
+    min-height: 44px;
+    padding: 0 15px;
+  }
+
+  .back-to-top-text {
+    display: none;
+  }
+
+  .back-to-top-button {
+    width: 44px;
+    padding: 0;
   }
 }
 
