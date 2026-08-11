@@ -1,4 +1,4 @@
-import "./App.css";
+import './App.css'
 
 function App() {
   return (
@@ -7,7 +7,7 @@ function App() {
         <p>AquaINT website coming together.</p>
       </section>
     </main>
-  );
+  )
 }
 
-export default App;
+export default App
