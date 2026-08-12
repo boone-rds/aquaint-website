@@ -17,10 +17,10 @@ const markets = [
       'Turn field conditions, weather, and crop response into practical intelligence across broad-acre operations.',
     type: 'collage',
     images: [
-      '/images/markets/row-crops/row-crops-corn.jpg',
-      '/images/markets/row-crops/row-crops-soybeans.jpg',
-      '/images/markets/row-crops/row-crops-wheat.jpg',
-      '/images/markets/row-crops/row-crops-alfalfa.jpg',
+      '/images/markets/row-crops/row-crops-corn.webp',
+      '/images/markets/row-crops/row-crops-soybeans.webp',
+      '/images/markets/row-crops/row-crops-wheat.webp',
+      '/images/markets/row-crops/row-crops-alfalfa.webp',
     ],
   },
   {
@@ -30,7 +30,7 @@ const markets = [
     description:
       'Support high-value crop decisions where timing, soil conditions, and water management can directly affect quality and yield.',
     type: 'single',
-    images: ['/images/markets/potatoes/potatoes-field.jpg'],
+    images: ['/images/markets/potatoes/potatoes-field.webp'],
   },
   {
     id: 'specialty-crops',
@@ -40,12 +40,12 @@ const markets = [
       'Bring greater visibility to production systems where management is intensive and small changes can carry significant consequences.',
     type: 'collage',
     images: [
-      '/images/markets/specialty-crops/specialty-strawberries.jpg',
-      '/images/markets/specialty-crops/specialty-blueberries.jpg',
-      '/images/markets/specialty-crops/specialty-carrots.jpg',
-      '/images/markets/specialty-crops/specialty-greenhouses.jpg',
-      '/images/markets/specialty-crops/specialty-tomatoes.jpg',
-      '/images/markets/specialty-crops/specialty-hops.jpg',
+      '/images/markets/specialty-crops/specialty-strawberries.webp',
+      '/images/markets/specialty-crops/specialty-blueberries.webp',
+      '/images/markets/specialty-crops/specialty-carrots.webp',
+      '/images/markets/specialty-crops/specialty-greenhouses.webp',
+      '/images/markets/specialty-crops/specialty-tomatoes.webp',
+      '/images/markets/specialty-crops/specialty-hops.webp',
     ],
   },
   {
@@ -56,10 +56,10 @@ const markets = [
       'Understand site-specific conditions and seasonal patterns to support better long-term decisions across vineyards and permanent crops.',
     type: 'collage',
     images: [
-      '/images/markets/vineyard-and-perm/v-and-p-almonds.jpg',
-      '/images/markets/vineyard-and-perm/v-and-p-pistachio.jpg',
-      '/images/markets/vineyard-and-perm/v-and-p-vineyard-1.jpg',
-      '/images/markets/vineyard-and-perm/v-and-p-vineyard-2.jpg',
+      '/images/markets/vineyard-and-perm/v-and-p-almonds.webp',
+      '/images/markets/vineyard-and-perm/v-and-p-pistachio.webp',
+      '/images/markets/vineyard-and-perm/v-and-p-vineyard-1.webp',
+      '/images/markets/vineyard-and-perm/v-and-p-vineyard-2.webp',
     ],
   },
   {
@@ -69,7 +69,7 @@ const markets = [
     description:
       'Improve visibility into the soil profile, crop demand, and water movement so irrigation becomes a more informed management decision.',
     type: 'single',
-    images: ['/images/markets/irrigated/irrigated-cp-mtns.jpg'],
+    images: ['/images/markets/irrigated/irrigated-cp-mtns.webp'],
   },
 ]
 
