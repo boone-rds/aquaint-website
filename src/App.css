@@ -8,10 +8,14 @@
   margin: 0 auto;
 }
 
+html {
+  scroll-padding-top: 88px;
+}
+
 .site-header {
   position: sticky;
   top: 0;
-  z-index: 50;
+  z-index: 100;
   background: rgba(247, 250, 249, 0.92);
   backdrop-filter: blur(14px);
   border-bottom: 1px solid rgba(16, 36, 45, 0.08);
@@ -88,6 +92,8 @@
   transform: translateY(-1px);
   background: #183640;
 }
+
+/* HERO */
 
 .hero-section {
   position: relative;
@@ -229,23 +235,22 @@
 
 .hero-orbit {
   position: absolute;
-  border: 1px solid rgba(32, 169, 189, 0.22);
   border-radius: 50%;
 }
 
 .hero-orbit-large {
   width: 520px;
   height: 520px;
-  border-color: rgba(16, 188, 235, 0.24);
-  transform: rotate(-17deg);
+  border: 1px solid rgba(16, 188, 235, 0.24);
 }
 
 .hero-orbit-small {
   width: 380px;
   height: 380px;
-  border-color: rgba(213, 162, 31, 0.28);
-  transform: rotate(21deg);
+  border: 1px solid rgba(213, 162, 31, 0.28);
 }
+
+/* FROM DATA TO DECISIONS */
 
 .decision-section {
   padding: 118px 0 126px;
@@ -319,6 +324,8 @@
   line-height: 1.65;
 }
 
+/* SERVICES */
+
 .services-section {
   padding: 120px 0 132px;
   background: #fbfdfc;
@@ -364,9 +371,7 @@
   border-right: 1px solid var(--color-line);
   border-bottom: 1px solid var(--color-line);
   background: rgba(255, 255, 255, 0.45);
-  transition:
-    background 180ms ease,
-    transform 180ms ease;
+  transition: background 180ms ease;
 }
 
 .service-card:hover {
@@ -410,6 +415,8 @@
   content: ' →';
   color: var(--color-aqua);
 }
+
+/* QUESTIONS */
 
 .questions-section {
   padding: 128px 0;
@@ -484,6 +491,8 @@
   line-height: 1.68;
 }
 
+/* WHO WE SERVE */
+
 .markets-story {
   padding: 126px 0 0;
   background: #fbfdfc;
@@ -494,7 +503,7 @@
   grid-template-columns: minmax(0, 1fr) minmax(320px, 0.72fr);
   gap: 72px;
   align-items: end;
-  padding-bottom: 86px;
+  padding-bottom: 72px;
 }
 
 .markets-heading h2 {
@@ -515,40 +524,38 @@
   line-height: 1.72;
 }
 
-.markets-story-shell {
-  position: relative;
-  background: #0a1420;
-}
-
-.markets-stage {
+.markets-carousel-wrap {
   position: relative;
   width: 100%;
-  height: 100vh;
   overflow: hidden;
   background: #0a1420;
 }
 
-.markets-visual {
-  position: relative;
+.markets-swiper {
   width: 100%;
-  height: calc(100vh - 88px);
+  height: min(76vh, 820px);
+  min-height: 620px;
+
+  --swiper-theme-color: #ffffff;
+  --swiper-navigation-size: 26px;
+  --swiper-pagination-bullet-size: 7px;
+  --swiper-pagination-bullet-horizontal-gap: 6px;
+  --swiper-pagination-color: var(--color-aqua);
+  --swiper-pagination-bullet-inactive-color: rgba(255, 255, 255, 0.72);
+  --swiper-pagination-bullet-inactive-opacity: 0.5;
+}
+
+.markets-swiper .swiper-slide {
   overflow: hidden;
   background: #0a1420;
 }
 
-.market-scene {
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  transform: scale(1.025);
-  transition:
-    opacity 700ms ease,
-    transform 1000ms ease;
-}
-
-.market-scene.is-active {
-  opacity: 1;
-  transform: scale(1);
+.market-slide {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #0a1420;
 }
 
 .market-scene-image,
@@ -579,6 +586,7 @@
 }
 
 /* Row crops */
+
 .market-collage-row-crops .market-collage-image-1 {
   width: 30%;
 }
@@ -596,6 +604,7 @@
 }
 
 /* Specialty crops */
+
 .market-collage-specialty-crops .market-collage-image-1 {
   width: 21%;
 }
@@ -621,6 +630,7 @@
 }
 
 /* Vineyards and permanent crops */
+
 .market-collage-vineyard-and-perm .market-collage-image-1 {
   width: 28%;
 }
@@ -640,22 +650,24 @@
 .market-overlay {
   position: absolute;
   inset: 0;
+  z-index: 2;
+  pointer-events: none;
   background:
     linear-gradient(
       90deg,
-      rgba(4, 11, 18, 0.76) 0%,
-      rgba(4, 11, 18, 0.42) 36%,
+      rgba(4, 11, 18, 0.78) 0%,
+      rgba(4, 11, 18, 0.46) 36%,
       rgba(4, 11, 18, 0.08) 70%
     ),
-    linear-gradient(0deg, rgba(4, 11, 18, 0.52) 0%, transparent 42%);
+    linear-gradient(0deg, rgba(4, 11, 18, 0.58) 0%, transparent 46%);
 }
 
 .market-copy {
   position: absolute;
-  left: 56px;
-  bottom: 58px;
-  z-index: 2;
-  max-width: 560px;
+  left: max(56px, calc((100vw - 1240px) / 2));
+  bottom: 62px;
+  z-index: 3;
+  max-width: 580px;
   color: white;
 }
 
@@ -681,9 +693,185 @@
 .market-copy p {
   max-width: 540px;
   margin: 18px 0 0;
-  color: rgba(255, 255, 255, 0.72);
+  color: rgba(255, 255, 255, 0.76);
   font-size: 1rem;
   line-height: 1.65;
+}
+
+.market-count {
+  position: absolute;
+  right: max(56px, calc((100vw - 1240px) / 2));
+  bottom: 62px;
+  z-index: 4;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+
+.market-count span {
+  margin: 0 7px;
+  color: var(--color-aqua);
+}
+
+/* Swiper arrows */
+
+.markets-swiper .swiper-button-prev,
+.markets-swiper .swiper-button-next {
+  width: 48px;
+  height: 48px;
+  margin-top: -24px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 50%;
+  background: rgba(4, 11, 18, 0.6);
+
+  backdrop-filter: blur(12px);
+  overflow: hidden;
+
+  transition:
+    background 180ms ease,
+    transform 180ms ease,
+    border-color 180ms ease;
+}
+
+.markets-swiper .swiper-button-prev {
+  left: 24px;
+}
+
+.markets-swiper .swiper-button-next {
+  right: 24px;
+}
+
+/* Hide Swiper's built-in icon */
+.markets-swiper .swiper-button-prev svg,
+.markets-swiper .swiper-button-next svg {
+  display: none;
+}
+
+/* Our custom chevron */
+.markets-swiper .swiper-button-prev::after,
+.markets-swiper .swiper-button-next::after {
+  content: '';
+  width: 10px;
+  height: 10px;
+  border-top: 2px solid white;
+  border-right: 2px solid white;
+}
+
+.markets-swiper .swiper-button-prev::after {
+  transform: rotate(-135deg);
+  margin-left: 4px;
+}
+
+.markets-swiper .swiper-button-next::after {
+  transform: rotate(45deg);
+  margin-right: 4px;
+}
+
+.markets-swiper .swiper-button-prev:hover,
+.markets-swiper .swiper-button-next:hover {
+  background: rgba(4, 11, 18, 0.9);
+  border-color: rgba(255, 255, 255, 0.38);
+  transform: scale(1.05);
+}
+
+/* Swiper pagination */
+
+.markets-swiper .swiper-pagination {
+  bottom: 24px;
+}
+
+.markets-swiper .swiper-pagination-bullet {
+  transition:
+    width 180ms ease,
+    opacity 180ms ease,
+    background 180ms ease;
+}
+
+.markets-swiper .swiper-pagination-bullet-active {
+  width: 26px;
+  border-radius: 999px;
+}
+
+/* OUR APPROACH */
+
+.approach-section {
+  padding: 132px 0 140px;
+  background: #fbfdfc;
+}
+
+.approach-layout {
+  display: grid;
+  grid-template-columns: minmax(320px, 0.82fr) minmax(0, 1.18fr);
+  gap: 110px;
+  align-items: start;
+}
+
+.approach-intro {
+  position: sticky;
+  top: 130px;
+}
+
+.approach-intro h2 {
+  max-width: 620px;
+  margin: 0;
+  color: var(--color-navy);
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(2.8rem, 4.4vw, 4.7rem);
+  line-height: 1.04;
+  font-weight: 400;
+  letter-spacing: -0.045em;
+}
+
+.approach-intro > p:last-child {
+  max-width: 560px;
+  margin: 28px 0 0;
+  color: var(--color-muted);
+  font-size: 1.04rem;
+  line-height: 1.72;
+}
+
+.approach-principles {
+  border-top: 1px solid var(--color-line);
+}
+
+.approach-principle {
+  display: grid;
+  grid-template-columns: 70px 1fr;
+  gap: 28px;
+  padding: 38px 0 42px;
+  border-bottom: 1px solid var(--color-line);
+}
+
+.principle-number {
+  padding-top: 5px;
+  color: var(--color-gold);
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+
+.approach-principle h3 {
+  margin: 0;
+  color: var(--color-navy);
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(1.9rem, 2.6vw, 2.7rem);
+  line-height: 1.08;
+  font-weight: 400;
+  letter-spacing: -0.025em;
+}
+
+.approach-principle p {
+  max-width: 640px;
+  margin: 12px 0 0;
+  color: var(--color-muted);
+  font-size: 0.97rem;
+  line-height: 1.7;
 }
 
 .placeholder-section {
@@ -702,26 +890,23 @@
   text-transform: uppercase;
 }
 
-.floating-controls {
+/* BACK TO TOP */
+
+.back-to-top-button {
   position: fixed;
   right: 24px;
   bottom: 24px;
-  z-index: 100;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 10px;
-}
-
-.floating-control {
+  z-index: 200;
   min-height: 46px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
   padding: 0 18px;
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(16, 36, 45, 0.12);
   border-radius: 999px;
+  color: var(--color-navy);
+  background: rgba(255, 255, 255, 0.92);
   font: inherit;
   font-size: 0.82rem;
   font-weight: 750;
@@ -734,42 +919,13 @@
     box-shadow 180ms ease;
 }
 
-.floating-control:hover {
-  transform: translateY(-2px);
-}
-
-.exit-story-button {
-  color: white;
-  background: rgba(10, 20, 32, 0.9);
-}
-
-.exit-story-button:hover {
-  background: var(--color-navy);
-}
-
-.back-to-top-button {
-  color: var(--color-navy);
-  background: rgba(255, 255, 255, 0.92);
-  border-color: rgba(16, 36, 45, 0.12);
-}
-
 .back-to-top-button:hover {
+  transform: translateY(-2px);
   background: white;
   box-shadow: 0 14px 38px rgba(4, 11, 18, 0.16);
 }
 
-@media (min-width: 1081px) {
-  .markets-triggers {
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-    pointer-events: none;
-  }
-
-  .market-trigger {
-    visibility: hidden;
-  }
-}
+/* TABLET */
 
 @media (max-width: 1080px) {
   .header-inner {
@@ -829,39 +985,36 @@
     max-width: 720px;
   }
 
-  .markets-story-shell {
-    display: block;
-    min-height: auto;
-    background: #0a1420;
+  .markets-swiper {
+    height: 680px;
+    min-height: 0;
   }
 
-  .markets-triggers {
-    display: none;
+  .market-copy {
+    left: 48px;
   }
 
-  .markets-visual {
+  .market-count {
+    right: 48px;
+  }
+
+  .approach-layout {
+    grid-template-columns: 1fr;
+    gap: 58px;
+  }
+
+  .approach-intro {
     position: static;
-    height: auto;
-    overflow: visible;
-  }
-
-  .market-scene {
-    position: relative;
-    inset: auto;
-    min-height: 620px;
-    opacity: 1;
-    transform: none;
-    margin-bottom: 1px;
-  }
-
-  .market-scene-image,
-  .market-collage {
-    position: absolute;
-    inset: 0;
   }
 }
 
+/* MOBILE */
+
 @media (max-width: 760px) {
+  html {
+    scroll-padding-top: 74px;
+  }
+
   .container {
     width: min(100% - 32px, 1240px);
   }
@@ -986,18 +1139,8 @@
     padding-bottom: 54px;
   }
 
-  .market-scene {
-    min-height: 560px;
-  }
-
-  .market-copy {
-    left: 28px;
-    right: 28px;
-    bottom: 34px;
-  }
-
-  .market-copy h3 {
-    font-size: clamp(2.6rem, 12vw, 4rem);
+  .markets-swiper {
+    height: 610px;
   }
 
   .market-collage {
@@ -1007,27 +1150,74 @@
 
   .market-collage-image {
     width: 100% !important;
-    height: 100%;
-    object-fit: cover;
   }
 
-  .floating-controls {
+  .market-copy {
+    left: 28px;
+    right: 28px;
+    bottom: 64px;
+  }
+
+  .market-copy h3 {
+    font-size: clamp(2.6rem, 12vw, 4rem);
+  }
+
+  .market-copy p {
+    max-width: 460px;
+    font-size: 0.94rem;
+  }
+
+  .market-count {
+    top: 22px;
+    right: 22px;
+    bottom: auto;
+  }
+
+  .markets-swiper .swiper-button-prev,
+  .markets-swiper .swiper-button-next {
+    width: 42px;
+    height: 42px;
+    margin-top: -21px;
+  }
+
+  .markets-swiper .swiper-button-prev::after,
+  .markets-swiper .swiper-button-next::after {
+    width: 9px;
+    height: 9px;
+  }
+
+  .markets-swiper .swiper-button-prev {
+    left: 12px;
+  }
+
+  .markets-swiper .swiper-button-next {
+    right: 12px;
+  }
+
+  .markets-swiper .swiper-pagination {
+    bottom: 20px;
+  }
+
+  .approach-section {
+    padding: 84px 0;
+  }
+
+  .approach-principle {
+    grid-template-columns: 46px 1fr;
+    gap: 18px;
+    padding: 30px 0 34px;
+  }
+
+  .back-to-top-button {
     right: 16px;
     bottom: 16px;
-  }
-
-  .floating-control {
+    width: 44px;
     min-height: 44px;
-    padding: 0 15px;
+    padding: 0;
   }
 
   .back-to-top-text {
     display: none;
-  }
-
-  .back-to-top-button {
-    width: 44px;
-    padding: 0;
   }
 }
 
@@ -1056,5 +1246,9 @@
   .hero-orbit-small {
     width: 250px;
     height: 250px;
+  }
+
+  .markets-swiper {
+    height: 560px;
   }
 }

@@ -1,9 +1,12 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import './App.css'
+import { useEffect, useState } from 'react'
+import { Swiper, SwiperSlide } from 'swiper/react'
+import { A11y, Autoplay, Navigation, Pagination } from 'swiper/modules'
 
-gsap.registerPlugin(ScrollTrigger)
+import 'swiper/css'
+import 'swiper/css/navigation'
+import 'swiper/css/pagination'
+
+import './App.css'
 
 const markets = [
   {
@@ -71,25 +74,12 @@ const markets = [
 ]
 
 function App() {
-  const [activeMarket, setActiveMarket] = useState(0)
-  const [isMarketStoryActive, setIsMarketStoryActive] = useState(false)
   const [showBackToTop, setShowBackToTop] = useState(false)
-
-  const marketsStoryRef = useRef<HTMLElement | null>(null)
-  const marketsVisualRef = useRef<HTMLDivElement | null>(null)
-  const afterStoryRef = useRef<HTMLDivElement | null>(null)
 
   const scrollToTop = () => {
     window.scrollTo({
       top: 0,
       behavior: 'smooth',
-    })
-  }
-
-  const exitMarketStory = () => {
-    afterStoryRef.current?.scrollIntoView({
-      behavior: 'smooth',
-      block: 'start',
     })
   }
 
@@ -99,46 +89,14 @@ function App() {
     }
 
     handleScroll()
-    window.addEventListener('scroll', handleScroll, { passive: true })
+
+    window.addEventListener('scroll', handleScroll, {
+      passive: true,
+    })
 
     return () => {
       window.removeEventListener('scroll', handleScroll)
     }
-  }, [])
-
-  useLayoutEffect(() => {
-    const story = marketsStoryRef.current
-    const stage = marketsVisualRef.current
-
-    if (!story || !stage) return
-
-    const mediaQuery = window.matchMedia('(min-width: 1081px)')
-
-    if (!mediaQuery.matches) return
-
-    const context = gsap.context(() => {
-      ScrollTrigger.create({
-        trigger: stage,
-        start: 'top top',
-        end: `+=${window.innerHeight * (markets.length - 1) * 0.65}`,
-        pin: true,
-        pinSpacing: true,
-        scrub: 0.35,
-
-        onEnter: () => setIsMarketStoryActive(true),
-        onEnterBack: () => setIsMarketStoryActive(true),
-        onLeave: () => setIsMarketStoryActive(false),
-        onLeaveBack: () => setIsMarketStoryActive(false),
-
-        onUpdate: (self) => {
-          const nextIndex = Math.min(markets.length - 1, Math.floor(self.progress * markets.length))
-
-          setActiveMarket(nextIndex)
-        },
-      })
-    }, story)
-
-    return () => context.revert()
   }, [])
 
   return (
@@ -271,6 +229,7 @@ function App() {
             <div className="services-heading">
               <div>
                 <p className="section-kicker">WHAT WE DO</p>
+
                 <h2>Turn field information into practical intelligence.</h2>
               </div>
 
@@ -283,7 +242,6 @@ function App() {
             <div className="services-grid">
               <article className="service-card">
                 <span className="service-index">01</span>
-
                 <h3>Field Monitoring</h3>
 
                 <p>
@@ -296,7 +254,6 @@ function App() {
 
               <article className="service-card">
                 <span className="service-index">02</span>
-
                 <h3>Data Interpretation</h3>
 
                 <p>
@@ -309,7 +266,6 @@ function App() {
 
               <article className="service-card">
                 <span className="service-index">03</span>
-
                 <h3>Decision Support</h3>
 
                 <p>
@@ -322,7 +278,6 @@ function App() {
 
               <article className="service-card">
                 <span className="service-index">04</span>
-
                 <h3>Seasonal Insight</h3>
 
                 <p>
@@ -402,10 +357,11 @@ function App() {
           </div>
         </section>
 
-        <section className="markets-story" id="who-we-serve" ref={marketsStoryRef}>
+        <section className="markets-story" id="who-we-serve">
           <div className="container markets-heading">
             <div>
               <p className="section-kicker">WHO WE SERVE</p>
+
               <h2>Built for operations where better information matters.</h2>
             </div>
 
@@ -415,50 +371,138 @@ function App() {
             </p>
           </div>
 
-          <div className="markets-story-shell">
-            <div className="markets-stage" ref={marketsVisualRef}>
+          <div className="markets-carousel-wrap">
+            <Swiper
+              className="markets-swiper"
+              modules={[Autoplay, Navigation, Pagination, A11y]}
+              slidesPerView={1}
+              loop
+              speed={700}
+              navigation
+              pagination={{
+                clickable: true,
+              }}
+              autoplay={{
+                delay: 4000,
+                disableOnInteraction: false,
+                pauseOnMouseEnter: false,
+              }}
+              a11y={{
+                enabled: true,
+              }}
+            >
               {markets.map((market, index) => (
-                <div
-                  key={market.id}
-                  className={`market-scene ${
-                    activeMarket === index ? 'is-active' : ''
-                  } market-scene-${market.id}`}
-                >
-                  {market.type === 'single' ? (
-                    <img
-                      src={market.images[0]}
-                      alt=""
-                      className={`market-scene-image market-scene-image-${market.id}`}
-                    />
-                  ) : (
-                    <div className={`market-collage market-collage-${market.id}`}>
-                      {market.images.map((image, imageIndex) => (
-                        <img
-                          key={image}
-                          src={image}
-                          alt=""
-                          className={`market-collage-image market-collage-image-${imageIndex + 1}`}
-                        />
-                      ))}
+                <SwiperSlide key={market.id}>
+                  <article className="market-slide">
+                    {market.type === 'single' ? (
+                      <img
+                        src={market.images[0]}
+                        alt=""
+                        className={`market-scene-image market-scene-image-${market.id}`}
+                        loading={index === 0 ? 'eager' : 'lazy'}
+                        fetchPriority={index === 0 ? 'high' : 'auto'}
+                        decoding="async"
+                      />
+                    ) : (
+                      <div className={`market-collage market-collage-${market.id}`}>
+                        {market.images.map((image, imageIndex) => (
+                          <img
+                            key={image}
+                            src={image}
+                            alt=""
+                            className={`market-collage-image market-collage-image-${imageIndex + 1}`}
+                            loading={index <= 1 ? 'eager' : 'lazy'}
+                            fetchPriority={index <= 1 ? 'high' : 'auto'}
+                            decoding="async"
+                          />
+                        ))}
+                      </div>
+                    )}
+
+                    <div className="market-overlay" />
+
+                    <div className="market-copy">
+                      <span className="market-label">{market.label}</span>
+
+                      <h3>{market.name}</h3>
+                      <p>{market.description}</p>
                     </div>
-                  )}
 
-                  <div className="market-overlay" />
-
-                  <div className="market-copy">
-                    <span className="market-label">{market.label}</span>
-                    <h3>{market.name}</h3>
-                    <p>{market.description}</p>
-                  </div>
-                </div>
+                    <div className="market-count">
+                      {String(index + 1).padStart(2, '0')}
+                      <span>/</span>
+                      {String(markets.length).padStart(2, '0')}
+                    </div>
+                  </article>
+                </SwiperSlide>
               ))}
-            </div>
+            </Swiper>
           </div>
         </section>
 
-        <section className="placeholder-section" id="approach" ref={afterStoryRef}>
-          <div className="container">
-            <p>Our Approach</p>
+        <section className="approach-section" id="approach">
+          <div className="container approach-layout">
+            <div className="approach-intro">
+              <p className="section-kicker">OUR APPROACH</p>
+
+              <h2>Technology should make decisions clearer, not more complicated.</h2>
+
+              <p>
+                AquaINT combines useful technology with practical interpretation and long-term
+                relationships. The goal is not more data. The goal is better understanding and
+                better decisions.
+              </p>
+            </div>
+
+            <div className="approach-principles">
+              <article className="approach-principle">
+                <span className="principle-number">01</span>
+
+                <div>
+                  <h3>Clarity</h3>
+                  <p>
+                    Complex field information should become easier to understand, not harder. We
+                    focus on the signals that help people see what matters.
+                  </p>
+                </div>
+              </article>
+
+              <article className="approach-principle">
+                <span className="principle-number">02</span>
+
+                <div>
+                  <h3>Stewardship</h3>
+                  <p>
+                    Water, time, capital, and attention are finite resources. Better information
+                    should help use each of them more intentionally.
+                  </p>
+                </div>
+              </article>
+
+              <article className="approach-principle">
+                <span className="principle-number">03</span>
+
+                <div>
+                  <h3>Practicality</h3>
+                  <p>
+                    Insight only matters if it works in the field. Recommendations must fit real
+                    operations, real constraints, and real decisions.
+                  </p>
+                </div>
+              </article>
+
+              <article className="approach-principle">
+                <span className="principle-number">04</span>
+
+                <div>
+                  <h3>Partnership</h3>
+                  <p>
+                    The best decisions improve over time. We build relationships that create
+                    context, trust, and a deeper understanding of each operation.
+                  </p>
+                </div>
+              </article>
+            </div>
           </div>
         </section>
 
@@ -468,30 +512,18 @@ function App() {
           </div>
         </section>
       </main>
-      <div className="floating-controls">
-        {isMarketStoryActive && (
-          <button
-            type="button"
-            className="floating-control exit-story-button"
-            onClick={exitMarketStory}
-          >
-            Exit Story
-            <span aria-hidden="true">↓</span>
-          </button>
-        )}
 
-        {showBackToTop && (
-          <button
-            type="button"
-            className="floating-control back-to-top-button"
-            onClick={scrollToTop}
-            aria-label="Back to top"
-          >
-            <span aria-hidden="true">↑</span>
-            <span className="back-to-top-text">Back to Top</span>
-          </button>
-        )}
-      </div>
+      {showBackToTop && (
+        <button
+          type="button"
+          className="back-to-top-button"
+          onClick={scrollToTop}
+          aria-label="Back to top"
+        >
+          <span aria-hidden="true">↑</span>
+          <span className="back-to-top-text">Back to Top</span>
+        </button>
+      )}
     </div>
   )
 }
