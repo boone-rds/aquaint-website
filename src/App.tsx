@@ -185,6 +185,7 @@ function App() {
             <a href="#how-it-works">How It Works</a>
             <a href="#who-we-serve">Who We Serve</a>
             <a href="#approach">Our Approach</a>
+            <a href="/field-conditions">Field Conditions</a>
           </nav>
 
           <button type="button" className="header-cta" onClick={openContact}>
