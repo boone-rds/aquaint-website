@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type FormEvent, type MouseEvent } from 'react'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { A11y, Autoplay, Navigation, Pagination } from 'swiper/modules'
 
@@ -7,6 +7,14 @@ import 'swiper/css/navigation'
 import 'swiper/css/pagination'
 
 import './App.css'
+
+const GOOGLE_FORM_ENDPOINT =
+  'https://docs.google.com/forms/d/e/1FAIpQLSchqMVieCeqGp2TRkUBHIgbPmAoFpOOEVUUgsbWClt4XYNUiQ/formResponse'
+
+const AQUAINT_EMAIL = 'gotwater@aquaint.io'
+const CALENDLY_URL = 'https://calendly.com/boone_rds/30min'
+
+type ContactStatus = 'idle' | 'submitting' | 'success' | 'error'
 
 const markets = [
   {
@@ -75,12 +83,54 @@ const markets = [
 
 function App() {
   const [showBackToTop, setShowBackToTop] = useState(false)
+  const [isContactOpen, setIsContactOpen] = useState(false)
+  const [contactStatus, setContactStatus] = useState<ContactStatus>('idle')
+
+  const currentYear = new Date().getFullYear()
 
   const scrollToTop = () => {
     window.scrollTo({
       top: 0,
       behavior: 'smooth',
     })
+  }
+
+  const openContact = () => {
+    setContactStatus('idle')
+    setIsContactOpen(true)
+  }
+
+  const closeContact = () => {
+    setIsContactOpen(false)
+    setContactStatus('idle')
+  }
+
+  const handleModalBackdrop = (event: MouseEvent<HTMLDivElement>) => {
+    if (event.target === event.currentTarget) {
+      closeContact()
+    }
+  }
+
+  const handleContactSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+
+    const form = event.currentTarget
+    const formData = new FormData(form)
+
+    setContactStatus('submitting')
+
+    try {
+      await fetch(GOOGLE_FORM_ENDPOINT, {
+        method: 'POST',
+        mode: 'no-cors',
+        body: formData,
+      })
+
+      form.reset()
+      setContactStatus('success')
+    } catch {
+      setContactStatus('error')
+    }
   }
 
   useEffect(() => {
@@ -99,6 +149,29 @@ function App() {
     }
   }, [])
 
+  useEffect(() => {
+    if (!isContactOpen) {
+      return
+    }
+
+    const previousOverflow = document.body.style.overflow
+
+    document.body.style.overflow = 'hidden'
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        closeContact()
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+
+    return () => {
+      document.body.style.overflow = previousOverflow
+      window.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [isContactOpen])
+
   return (
     <div className="site-shell">
       <header className="site-header">
@@ -114,9 +187,9 @@ function App() {
             <a href="#approach">Our Approach</a>
           </nav>
 
-          <a className="header-cta" href="#contact">
+          <button type="button" className="header-cta" onClick={openContact}>
             Start a Conversation
-          </a>
+          </button>
         </div>
       </header>
 
@@ -138,9 +211,9 @@ function App() {
                   Answer Better Questions
                 </a>
 
-                <a className="button button-secondary" href="#contact">
+                <button type="button" className="button button-secondary" onClick={openContact}>
                   Start a Conversation
-                </a>
+                </button>
               </div>
 
               <div className="hero-proof">
@@ -506,12 +579,93 @@ function App() {
           </div>
         </section>
 
-        <section className="placeholder-section" id="contact">
-          <div className="container">
-            <p>Contact</p>
+        <section className="contact-section" id="contact">
+          <div className="container contact-layout">
+            <div className="contact-copy">
+              <p className="section-kicker">START A CONVERSATION</p>
+
+              <h2>Better decisions usually start with a better question.</h2>
+
+              <p>
+                Whether you are evaluating field monitoring, trying to make better use of existing
+                data, or simply want to understand what AquaINT could bring to your operation, start
+                with a conversation.
+              </p>
+            </div>
+
+            <div className="contact-actions-panel">
+              <div className="contact-panel-mark" aria-hidden="true">
+                <img src="/images/brand/aquaint-mark.png" alt="" />
+              </div>
+
+              <p className="contact-panel-label">LET&apos;S TALK</p>
+
+              <h3>Tell us what you are trying to understand.</h3>
+
+              <p className="contact-panel-copy">
+                We will start with the questions, the field, and the decisions you are trying to
+                make.
+              </p>
+
+              <button type="button" className="contact-primary-button" onClick={openContact}>
+                Start a Conversation
+                <span aria-hidden="true">→</span>
+              </button>
+
+              <div className="contact-secondary-actions">
+                <a href={`mailto:${AQUAINT_EMAIL}`}>Email Us</a>
+
+                <span aria-hidden="true">•</span>
+
+                <a href={CALENDLY_URL} target="_blank" rel="noreferrer">
+                  Schedule a Call
+                </a>
+              </div>
+            </div>
           </div>
         </section>
       </main>
+
+      <footer className="site-footer">
+        <div className="container footer-main">
+          <div className="footer-brand">
+            <a href="#top" aria-label="AquaINT home">
+              <img src="/images/brand/aquaint-logo-white.png" alt="Aqua Intelligence" />
+            </a>
+
+            <p>Field intelligence for better decisions.</p>
+          </div>
+
+          <div className="footer-column">
+            <p className="footer-heading">Explore</p>
+
+            <a href="#what-we-do">What We Do</a>
+            <a href="#how-it-works">How It Works</a>
+            <a href="#who-we-serve">Who We Serve</a>
+            <a href="#approach">Our Approach</a>
+          </div>
+
+          <div className="footer-column">
+            <p className="footer-heading">Connect</p>
+
+            <a href={`mailto:${AQUAINT_EMAIL}`}>{AQUAINT_EMAIL}</a>
+
+            <a href={CALENDLY_URL} target="_blank" rel="noreferrer">
+              Schedule a Call
+            </a>
+
+            <button type="button" onClick={openContact}>
+              Start a Conversation
+            </button>
+          </div>
+        </div>
+
+        <div className="container footer-bottom">
+          <p>© {currentYear} Aqua Intelligence, LLC. All rights reserved.</p>
+
+          <p>A Raney Day Solution.</p>
+        </div>
+      </footer>
 
       {showBackToTop && (
         <button
@@ -523,6 +677,118 @@ function App() {
           <span aria-hidden="true">↑</span>
           <span className="back-to-top-text">Back to Top</span>
         </button>
+      )}
+
+      {isContactOpen && (
+        <div
+          className="contact-modal-backdrop"
+          onMouseDown={handleModalBackdrop}
+          role="presentation"
+        >
+          <div
+            className="contact-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="contact-modal-title"
+          >
+            <button
+              type="button"
+              className="contact-modal-close"
+              onClick={closeContact}
+              aria-label="Close contact form"
+            >
+              <span aria-hidden="true">×</span>
+            </button>
+
+            {contactStatus === 'success' ? (
+              <div className="contact-success">
+                <div className="contact-success-mark" aria-hidden="true">
+                  ✓
+                </div>
+
+                <p className="contact-modal-kicker">MESSAGE RECEIVED</p>
+
+                <h2 id="contact-modal-title">Thanks for reaching out.</h2>
+
+                <p>Your message has been sent to AquaINT. We will follow up as soon as we can.</p>
+
+                <button type="button" className="contact-submit-button" onClick={closeContact}>
+                  Close
+                </button>
+              </div>
+            ) : (
+              <>
+                <div className="contact-modal-heading">
+                  <p className="contact-modal-kicker">START A CONVERSATION</p>
+
+                  <h2 id="contact-modal-title">What are you trying to understand?</h2>
+
+                  <p>
+                    Give us a little context about your operation, challenge, or question and we
+                    will take it from there.
+                  </p>
+                </div>
+
+                <form className="contact-form" onSubmit={handleContactSubmit}>
+                  <div className="contact-form-row">
+                    <label className="contact-field">
+                      <span>Name</span>
+
+                      <input type="text" name="entry.167312055" autoComplete="name" required />
+                    </label>
+
+                    <label className="contact-field">
+                      <span>Email</span>
+
+                      <input type="email" name="entry.1925134520" autoComplete="email" required />
+                    </label>
+                  </div>
+
+                  <label className="contact-field">
+                    <span>
+                      Company / Operation
+                      <small>Optional</small>
+                    </span>
+
+                    <input type="text" name="entry.1422029915" autoComplete="organization" />
+                  </label>
+
+                  <label className="contact-field">
+                    <span>Message</span>
+
+                    <textarea name="entry.2068458558" rows={6} required />
+                  </label>
+
+                  {contactStatus === 'error' && (
+                    <p className="contact-form-error" role="alert">
+                      Something went wrong sending the message. Please try again or email us at{' '}
+                      <a href={`mailto:${AQUAINT_EMAIL}`}>{AQUAINT_EMAIL}</a>.
+                    </p>
+                  )}
+
+                  <div className="contact-form-footer">
+                    <p>
+                      Prefer a calendar?
+                      <a href={CALENDLY_URL} target="_blank" rel="noreferrer">
+                        Schedule a call.
+                      </a>
+                    </p>
+
+                    <button
+                      type="submit"
+                      className="contact-submit-button"
+                      disabled={contactStatus === 'submitting'}
+                    >
+                      {contactStatus === 'submitting' ? 'Sending…' : 'Send Message'}
+
+                      {contactStatus !== 'submitting' && <span aria-hidden="true">→</span>}
+                    </button>
+                  </div>
+                </form>
+              </>
+            )}
+          </div>
+        </div>
       )}
     </div>
   )
