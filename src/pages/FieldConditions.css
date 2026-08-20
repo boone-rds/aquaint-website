@@ -75,7 +75,7 @@
   line-height: 1.7;
 }
 
-/* SECTIONS */
+/* SHARED SECTIONS */
 
 .conditions-section {
   padding: 100px 0;
@@ -131,6 +131,261 @@
   margin: 14px 4px 0;
   color: #71858b;
   font-size: 0.82rem;
+}
+
+/* FIELD CONDITIONS SNAPSHOT */
+
+.conditions-snapshot-section {
+  padding-top: 0;
+}
+
+.conditions-snapshot {
+  padding: 54px;
+  border: 1px solid rgba(16, 36, 45, 0.08);
+  border-radius: 28px;
+  background: #ffffff;
+  box-shadow: 0 24px 64px rgba(16, 36, 45, 0.08);
+}
+
+.conditions-snapshot-heading {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 0.65fr);
+  align-items: end;
+  gap: 64px;
+}
+
+.conditions-snapshot-heading h2 {
+  margin: 0;
+  color: #10242d;
+  font-size: clamp(2.1rem, 4vw, 3.6rem);
+  line-height: 1.03;
+  letter-spacing: -0.045em;
+}
+
+.conditions-snapshot-heading > p {
+  margin: 0;
+  line-height: 1.7;
+}
+
+/* LOCATION SEARCH */
+
+.conditions-location-form {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 18px;
+  margin-top: 42px;
+}
+
+.conditions-address-field {
+  display: grid;
+  gap: 8px;
+}
+
+.conditions-address-field > span {
+  color: #536a72;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
+.conditions-google-autocomplete {
+  width: 100%;
+}
+
+.conditions-google-autocomplete gmp-place-autocomplete {
+  display: block;
+  width: 100%;
+  color-scheme: light;
+
+  --gmp-mat-color-surface: #f7faf9;
+  --gmp-mat-color-on-surface: #10242d;
+  --gmp-mat-color-on-surface-variant: #71858b;
+  --gmp-mat-color-primary: #35359c;
+  --gmp-mat-color-outline: rgba(16, 36, 45, 0.18);
+}
+
+.conditions-google-autocomplete gmp-place-autocomplete::part(input-container) {
+  min-height: 54px;
+  border: 1px solid rgba(16, 36, 45, 0.16);
+  border-radius: 12px;
+  background: #f7faf9;
+  box-shadow: none;
+}
+
+.conditions-google-autocomplete gmp-place-autocomplete::part(input) {
+  color: #10242d;
+  font-size: 1rem;
+}
+
+.conditions-google-autocomplete gmp-place-autocomplete::part(leading-icon) {
+  color: #71858b;
+}
+
+.conditions-google-autocomplete gmp-place-autocomplete:focus-within::part(input-container) {
+  border-color: #35359c;
+  box-shadow: 0 0 0 3px rgba(53, 53, 156, 0.08);
+}
+
+/* LOCATION ACTIONS */
+
+.conditions-location-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.conditions-location-button {
+  min-height: 52px;
+  padding: 0 24px;
+  border: 0;
+  border-radius: 999px;
+  background: #35359c;
+  color: #ffffff;
+  font-weight: 800;
+  cursor: pointer;
+  transition:
+    background 180ms ease,
+    transform 180ms ease,
+    border-color 180ms ease;
+}
+
+.conditions-location-button:hover:not(:disabled) {
+  background: #1d234f;
+  transform: translateY(-1px);
+}
+
+.conditions-location-button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.conditions-location-button-secondary {
+  border: 1px solid rgba(53, 53, 156, 0.25);
+  background: transparent;
+  color: #35359c;
+}
+
+.conditions-location-button-secondary:hover:not(:disabled) {
+  border-color: #35359c;
+  background: rgba(53, 53, 156, 0.06);
+  color: #35359c;
+}
+
+.conditions-location-or {
+  color: #8a9ba0;
+  font-size: 0.82rem;
+}
+
+/* START DATE */
+
+.conditions-snapshot-controls {
+  display: flex;
+  align-items: flex-end;
+  gap: 18px;
+  margin-top: 24px;
+}
+
+.conditions-date-field {
+  display: grid;
+  gap: 8px;
+}
+
+.conditions-date-field span {
+  color: #536a72;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
+.conditions-date-field input {
+  min-height: 52px;
+  padding: 0 16px;
+  border: 1px solid rgba(16, 36, 45, 0.16);
+  border-radius: 12px;
+  background: #f7faf9;
+  color: #10242d;
+}
+
+/* SELECTED / RESULT LOCATION */
+
+.conditions-selected-location {
+  margin: 18px 0 0;
+  color: #536a72;
+  font-size: 0.86rem;
+}
+
+.conditions-results-heading {
+  margin-top: 42px;
+}
+
+.conditions-results-heading p {
+  margin: 0 0 6px;
+  color: #71858b;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.conditions-results-heading h3 {
+  margin: 0;
+  color: #10242d;
+  font-size: 1.5rem;
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+}
+
+/* METRICS */
+
+.conditions-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 36px;
+}
+
+.conditions-metric {
+  padding: 30px;
+  border-radius: 20px;
+  background: #eef4f3;
+}
+
+.conditions-metric p {
+  margin: 0;
+  color: #536a72;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.conditions-metric strong {
+  display: block;
+  margin-top: 12px;
+  color: #1d234f;
+  font-size: clamp(2.3rem, 4vw, 3.4rem);
+  line-height: 1;
+  letter-spacing: -0.045em;
+}
+
+.conditions-metric span {
+  display: block;
+  margin-top: 10px;
+  color: #71858b;
+  font-size: 0.86rem;
+}
+
+.conditions-data-note,
+.conditions-snapshot-error {
+  margin: 20px 0 0;
+  color: #71858b;
+  font-size: 0.82rem;
+}
+
+.conditions-snapshot-error {
+  color: #9a352f;
 }
 
 /* AGRICULTURAL CONTEXT */
@@ -238,7 +493,7 @@
   transform: translateY(-2px);
 }
 
-/* MOBILE */
+/* TABLET */
 
 @media (max-width: 800px) {
   .conditions-container {
@@ -266,18 +521,37 @@
   }
 
   .conditions-heading,
-  .conditions-context-layout {
+  .conditions-context-layout,
+  .conditions-snapshot-heading,
+  .conditions-metrics {
     grid-template-columns: 1fr;
-    gap: 32px;
+    gap: 24px;
   }
 
   .conditions-map-shell {
-    min-height: 560px;
+    min-height: 520px;
     border-radius: 20px;
   }
 
   .conditions-map {
-    height: 560px;
+    height: 520px;
+  }
+
+  .conditions-snapshot {
+    padding: 36px;
+  }
+
+  .conditions-location-actions {
+    width: 100%;
+  }
+
+  .conditions-snapshot-controls {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .conditions-date-field input {
+    width: 100%;
   }
 
   .conditions-context-card {
@@ -288,6 +562,8 @@
     padding: 80px 0;
   }
 }
+
+/* MOBILE */
 
 @media (max-width: 520px) {
   .conditions-header-inner {
@@ -304,7 +580,29 @@
 
   .conditions-map-shell,
   .conditions-map {
-    min-height: 500px;
-    height: 500px;
+    min-height: 480px;
+    height: 480px;
+  }
+
+  .conditions-snapshot {
+    padding: 28px 22px;
+    border-radius: 22px;
+  }
+
+  .conditions-location-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .conditions-location-button {
+    width: 100%;
+  }
+
+  .conditions-location-or {
+    text-align: center;
+  }
+
+  .conditions-metric {
+    padding: 24px;
   }
 }

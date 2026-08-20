@@ -1,4 +1,5 @@
 import './FieldConditions.css'
+import ConditionsSnapshot from '../components/ConditionsSnapshot'
 
 const WINDY_URL =
   'https://embed.windy.com/embed.html?type=map&location=coordinates&metricRain=in&metricTemp=%C2%B0F&metricWind=mph&zoom=5&overlay=rain&product=ecmwf&level=surface&lat=39.5&lon=-98.35'
@@ -59,6 +60,12 @@ function FieldConditions() {
         </div>
       </section>
 
+      <section className="conditions-section conditions-snapshot-section">
+        <div className="conditions-container">
+          <ConditionsSnapshot />
+        </div>
+      </section>
+
       <section className="conditions-section conditions-section-alt">
         <div className="conditions-container conditions-context-layout">
           <div>
@@ -67,8 +74,8 @@ function FieldConditions() {
             <h2>Put current conditions in perspective.</h2>
 
             <p>
-              The U.S. Drought Monitor provides a weekly assessment of drought intensity and extent
-              across the United States.
+              Regional weather and modeled field conditions can provide useful context, but
+              conditions can vary significantly from one field to the next.
             </p>
 
             <a
@@ -77,7 +84,7 @@ function FieldConditions() {
               target="_blank"
               rel="noreferrer"
             >
-              View Current Drought Monitor
+              View U.S. Drought Monitor
             </a>
           </div>
 
@@ -87,8 +94,8 @@ function FieldConditions() {
             <h3>AquaINT Crop Tools</h3>
 
             <p>
-              We&apos;re building practical tools for growing degree days, rainfall history, and
-              crop water demand.
+              We&apos;re building additional tools around rainfall history, crop water demand, and
+              other field-level decision inputs.
             </p>
           </div>
         </div>
