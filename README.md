@@ -1,73 +1,261 @@
-# React + TypeScript + Vite
+# AquaINT Website
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Public website and field intelligence tools for [AquaINT](https://aquaint.io).
 
-Currently, two official plugins are available:
+AquaINT combines field monitoring, technology, and experienced interpretation to turn field data into practical agricultural decisions.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Live Site
 
-## React Compiler
+- Website: https://aquaint.io
+- Field Conditions: https://aquaint.io/field-conditions
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Tech Stack
 
-## Expanding the ESLint configuration
+- React
+- TypeScript
+- Vite
+- React Router
+- Swiper
+- Google Maps / Places
+- NASA POWER
+- Windy
+- OpenET
+- Firebase Hosting
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+A companion Cloudflare Worker provides protected access to OpenET:
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- Repository: `aquaint-field-data`
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## Local Development
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+Install dependencies:
+
+```bash
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Start the development server:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm run dev
 ```
+
+Or, using the local development helper:
+
+```bash
+devapp
+```
+
+The local site is typically available at:
+
+```text
+http://localhost:5173
+```
+
+## Environment Variables
+
+Create a local `.env` file:
+
+```env
+VITE_GOOGLE_MAPS_API_KEY=your_google_maps_api_key
+```
+
+The Google Maps browser key should be restricted by HTTP referrer and limited to the required Google Maps Platform APIs.
+
+Do not commit `.env` files or API credentials.
+
+## Project Structure
+
+```text
+src/
+├── components/
+│   └── ConditionsSnapshot.tsx
+├── pages/
+│   ├── FieldConditions.tsx
+│   └── FieldConditions.css
+├── App.tsx
+├── App.css
+├── index.css
+└── main.tsx
+
+public/
+├── icons/
+└── images/
+    ├── brand/
+    └── markets/
+```
+
+## Routes
+
+### `/`
+
+Primary AquaINT marketing site.
+
+Includes:
+
+- What We Do
+- Answer Better Questions
+- Who We Serve
+- Our Approach
+- Contact
+- Link to Field Conditions
+
+### `/field-conditions`
+
+Free agricultural field-conditions tool.
+
+Current capabilities include:
+
+- Windy interactive weather map
+- Google Places address autocomplete
+- Browser geolocation
+- 7-day rainfall
+- 30-day rainfall
+- 60-day rainfall
+- Base 50 Growing Degree Days
+- Latest available monthly evapotranspiration
+
+## Data Sources
+
+### Windy
+
+Provides the interactive regional weather visualization.
+
+### NASA POWER
+
+Provides daily precipitation and temperature data used for:
+
+- 7-day rainfall
+- 30-day rainfall
+- 60-day rainfall
+- Base 50 GDD calculations
+
+### Google Maps Platform
+
+Google Places provides address autocomplete and geographic coordinates for location-based field-condition queries.
+
+### OpenET
+
+Provides satellite- and model-derived monthly evapotranspiration.
+
+OpenET requests are proxied through the separate `aquaint-field-data` Cloudflare Worker so the OpenET API key is never exposed to the browser.
+
+The application requests the latest reasonably settled monthly ET period:
+
+- after the 15th of the month: previous month
+- on or before the 15th: two months prior
+
+## Field Data Architecture
+
+```text
+Browser
+  │
+  ├── Google Places
+  │       └── latitude / longitude
+  │
+  ├── NASA POWER
+  │       ├── rainfall
+  │       └── temperature / GDD
+  │
+  └── AquaINT Field Data Worker
+          │
+          └── OpenET
+                  └── monthly ET
+```
+
+The companion Worker protects the OpenET API key and caches ET responses to reduce external API usage.
+
+## Quality Checks
+
+Before committing or deploying:
+
+```bash
+checkapp
+```
+
+This runs the project's formatting, linting, and production build checks.
+
+## Deployment
+
+The website is hosted with Firebase Hosting.
+
+Deploy with:
+
+```bash
+firebase deploy --only hosting
+```
+
+Firebase project:
+
+```text
+aquaint-website
+```
+
+The site is configured as a single-page application so routes such as `/field-conditions` resolve through React Router.
+
+## Development Workflow
+
+Typical workflow:
+
+```bash
+devapp
+```
+
+Make and test changes, then:
+
+```bash
+checkapp
+```
+
+Commit and push with:
+
+```bash
+gship "commit message"
+```
+
+Deploy production changes with:
+
+```bash
+firebase deploy --only hosting
+```
+
+## Related Project
+
+### AquaINT Field Data
+
+`aquaint-field-data`
+
+A Cloudflare Worker providing protected backend access to field-data APIs used by this website.
+
+Current endpoint:
+
+```text
+GET /et?lat={latitude}&lon={longitude}
+```
+
+Current upstream source:
+
+- OpenET Ensemble monthly evapotranspiration
+
+## Brand
+
+Primary AquaINT colors:
+
+```text
+Aqua        #10BCEB
+Aqua Dark   #079FD0
+Indigo      #35359C
+Dark Indigo #1D234F
+Gold        #D5A21F
+Navy        #10242D
+```
+
+Brand assets are located under:
+
+```text
+public/images/brand/
+```
+
+## License
+
+Private project for Aqua Intelligence, LLC.
