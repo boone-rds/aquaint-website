@@ -16,9 +16,19 @@ type PowerResponse = {
 type ConditionsData = {
   rain7: number
   rain30: number
+  rain60: number
   gdd: number
   throughDate: string
   locationName: string
+}
+
+type EtData = {
+  et: number
+  units: string
+  month: string
+  date: string
+  source: string
+  model: string
 }
 
 type SelectedPlace = {
@@ -28,6 +38,8 @@ type SelectedPlace = {
 }
 
 type Status = 'idle' | 'locating' | 'loading' | 'success' | 'error'
+
+type EtStatus = 'idle' | 'loading' | 'success' | 'error'
 
 type PlacesLibrary = Awaited<ReturnType<typeof importLibrary>> & {
   PlaceAutocompleteElement?: new (options?: { includedRegionCodes?: string[] }) => HTMLElement & {
@@ -52,6 +64,8 @@ type PlacePredictionSelectEventLike = Event & {
 
 const MM_TO_INCHES = 0.0393701
 
+const ET_API_URL = 'https://aquaint-field-data.raneydaysolutions.workers.dev/et'
+
 function formatPowerDate(date: Date) {
   return date.toISOString().slice(0, 10).replaceAll('-', '')
 }
@@ -73,6 +87,7 @@ function calculateGdd(maxTemps: Record<string, number>, minTemps: Record<string,
 
     const maxF = (max * 9) / 5 + 32
     const minF = (min * 9) / 5 + 32
+
     const dailyGdd = Math.max((maxF + minF) / 2 - 50, 0)
 
     return total + dailyGdd
@@ -85,8 +100,15 @@ function ConditionsSnapshot() {
   const [selectedPlace, setSelectedPlace] = useState<SelectedPlace | null>(null)
 
   const [startDate, setStartDate] = useState(defaultStartDate())
+
   const [data, setData] = useState<ConditionsData | null>(null)
+
+  const [etData, setEtData] = useState<EtData | null>(null)
+
   const [status, setStatus] = useState<Status>('idle')
+
+  const [etStatus, setEtStatus] = useState<EtStatus>('idle')
+
   const [error, setError] = useState('')
 
   useEffect(() => {
@@ -141,6 +163,7 @@ function ConditionsSnapshot() {
             }
 
             const latitude = place.location.lat()
+
             const longitude = place.location.lng()
 
             const locationName = place.formattedAddress || place.displayName || 'Selected location'
@@ -153,6 +176,8 @@ function ConditionsSnapshot() {
 
             setError('')
             setData(null)
+            setEtData(null)
+            setEtStatus('idle')
             setStatus('idle')
           } catch (caughtError) {
             console.error(caughtError)
@@ -176,27 +201,76 @@ function ConditionsSnapshot() {
     }
   }, [])
 
+  async function loadEt(latitude: number, longitude: number) {
+    try {
+      setEtStatus('loading')
+      setEtData(null)
+
+      const url = new URL(ET_API_URL)
+
+      url.searchParams.set('lat', latitude.toString())
+
+      url.searchParams.set('lon', longitude.toString())
+
+      const response = await fetch(url)
+
+      if (!response.ok) {
+        throw new Error('ET data is unavailable.')
+      }
+
+      const result = (await response.json()) as EtData
+
+      if (typeof result.et !== 'number' || !Number.isFinite(result.et)) {
+        throw new Error('ET data is unavailable.')
+      }
+
+      setEtData(result)
+      setEtStatus('success')
+    } catch (caughtError) {
+      console.error('Unable to load OpenET data:', caughtError)
+
+      setEtData(null)
+      setEtStatus('error')
+    }
+  }
+
   async function loadConditions(latitude: number, longitude: number, locationName: string) {
     try {
       setStatus('loading')
       setError('')
+      setData(null)
+
+      /*
+       * ET is intentionally loaded independently.
+       * If OpenET is slow or unavailable, rainfall and
+       * GDD should still render normally.
+       */
+      void loadEt(latitude, longitude)
 
       const end = new Date()
+
       const seasonStart = new Date(`${startDate}T12:00:00`)
 
-      const thirtyFiveDaysAgo = new Date()
-      thirtyFiveDaysAgo.setDate(thirtyFiveDaysAgo.getDate() - 35)
+      const sixtyFiveDaysAgo = new Date()
 
-      const requestStart = seasonStart < thirtyFiveDaysAgo ? seasonStart : thirtyFiveDaysAgo
+      sixtyFiveDaysAgo.setDate(sixtyFiveDaysAgo.getDate() - 65)
+
+      const requestStart = seasonStart < sixtyFiveDaysAgo ? seasonStart : sixtyFiveDaysAgo
 
       const url = new URL('https://power.larc.nasa.gov/api/temporal/daily/point')
 
       url.searchParams.set('parameters', 'PRECTOTCORR,T2M_MAX,T2M_MIN')
+
       url.searchParams.set('community', 'AG')
+
       url.searchParams.set('latitude', latitude.toString())
+
       url.searchParams.set('longitude', longitude.toString())
+
       url.searchParams.set('start', formatPowerDate(requestStart))
+
       url.searchParams.set('end', formatPowerDate(end))
+
       url.searchParams.set('format', 'JSON')
 
       const response = await fetch(url)
@@ -224,7 +298,10 @@ function ConditionsSnapshot() {
       const seasonDates = sortedDates.filter((date) => date >= startDateKey)
 
       const last7Dates = sortedDates.slice(-7)
+
       const last30Dates = sortedDates.slice(-30)
+
+      const last60Dates = sortedDates.slice(-60)
 
       const sumRain = (dates: string[]) =>
         dates.reduce((total, date) => {
@@ -250,11 +327,15 @@ function ConditionsSnapshot() {
       setData({
         rain7: sumRain(last7Dates),
         rain30: sumRain(last30Dates),
+        rain60: sumRain(last60Dates),
+
         gdd: calculateGdd(seasonMaxTemps, seasonMinTemps),
-        throughDate: `${latestDate.slice(4, 6)}/${latestDate.slice(
-          6,
-          8,
-        )}/${latestDate.slice(0, 4)}`,
+
+        throughDate: `${latestDate.slice(4, 6)}/${latestDate.slice(6, 8)}/${latestDate.slice(
+          0,
+          4,
+        )}`,
+
         locationName,
       })
 
@@ -275,6 +356,7 @@ function ConditionsSnapshot() {
 
     if (!selectedPlace) {
       setError('Start typing a location and select one of the Google suggestions.')
+
       setStatus('error')
       return
     }
@@ -297,16 +379,20 @@ function ConditionsSnapshot() {
     setStatus('locating')
     setError('')
     setData(null)
+    setEtData(null)
+    setEtStatus('idle')
 
     navigator.geolocation.getCurrentPosition(
       async ({ coords }) => {
         await loadConditions(coords.latitude, coords.longitude, 'Current location')
       },
+
       () => {
         setError('We could not access your location. Search for an address or ZIP code instead.')
 
         setStatus('error')
       },
+
       {
         enableHighAccuracy: false,
         timeout: 10000,
@@ -326,8 +412,8 @@ function ConditionsSnapshot() {
         </div>
 
         <p>
-          Search for an address or use your current location to see recent rainfall and accumulated
-          heat for your area.
+          Search for an address or use your current location to see recent rainfall, accumulated
+          heat, and evapotranspiration context for your area.
         </p>
       </div>
 
@@ -365,6 +451,7 @@ function ConditionsSnapshot() {
             value={startDate}
             onChange={(event) => {
               setStartDate(event.target.value)
+
               setData(null)
             }}
           />
@@ -385,11 +472,14 @@ function ConditionsSnapshot() {
             <h3>{data.locationName}</h3>
           </div>
 
-          <div className="conditions-metrics">
+          <div className="conditions-metrics conditions-metrics-five">
             <article className="conditions-metric">
               <p>7-Day Rainfall</p>
 
-              <strong>{data.rain7.toFixed(2)}&quot;</strong>
+              <strong>
+                {data.rain7.toFixed(2)}
+                &quot;
+              </strong>
 
               <span>Recent precipitation</span>
             </article>
@@ -397,9 +487,23 @@ function ConditionsSnapshot() {
             <article className="conditions-metric">
               <p>30-Day Rainfall</p>
 
-              <strong>{data.rain30.toFixed(2)}&quot;</strong>
+              <strong>
+                {data.rain30.toFixed(2)}
+                &quot;
+              </strong>
 
               <span>Recent precipitation</span>
+            </article>
+
+            <article className="conditions-metric">
+              <p>60-Day Rainfall</p>
+
+              <strong>
+                {data.rain60.toFixed(2)}
+                &quot;
+              </strong>
+
+              <span>Extended precipitation context</span>
             </article>
 
             <article className="conditions-metric">
@@ -409,11 +513,60 @@ function ConditionsSnapshot() {
 
               <span>Since selected start date</span>
             </article>
+
+            <article className="conditions-metric">
+              <p>Latest Monthly ET</p>
+
+              {etStatus === 'loading' && (
+                <>
+                  <strong>…</strong>
+                  <span>Loading OpenET data</span>
+                </>
+              )}
+
+              {etStatus === 'success' && etData && (
+                <>
+                  <strong>
+                    {etData.et.toFixed(2)}
+                    &quot;
+                  </strong>
+
+                  <span>
+                    {etData.month} · {etData.source} {etData.model}
+                  </span>
+                </>
+              )}
+
+              {etStatus === 'error' && (
+                <>
+                  <strong>—</strong>
+
+                  <span>ET temporarily unavailable</span>
+                </>
+              )}
+
+              {etStatus === 'idle' && (
+                <>
+                  <strong>—</strong>
+
+                  <span>Monthly evapotranspiration</span>
+                </>
+              )}
+            </article>
           </div>
 
-          <p className="conditions-data-note">
-            Data available through {data.throughDate}. Weather data provided by NASA POWER.
-          </p>
+          <div className="conditions-data-notes">
+            <p className="conditions-data-note">
+              Rainfall and temperature data available through {data.throughDate}. Weather data
+              provided by NASA POWER.
+            </p>
+
+            {etData && (
+              <p className="conditions-data-note">
+                Evapotranspiration is satellite- and model-derived monthly ET from OpenET.
+              </p>
+            )}
+          </div>
         </>
       )}
     </section>
