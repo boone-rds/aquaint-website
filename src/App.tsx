@@ -7,9 +7,9 @@ import 'swiper/css/navigation'
 import 'swiper/css/pagination'
 
 import './App.css'
+import TurnstileWidget from './components/TurnstileWidget'
 
-const GOOGLE_FORM_ENDPOINT =
-  'https://docs.google.com/forms/d/e/1FAIpQLSchqMVieCeqGp2TRkUBHIgbPmAoFpOOEVUUgsbWClt4XYNUiQ/formResponse'
+const CONTACT_GATEWAY_URL = import.meta.env.VITE_CONTACT_GATEWAY_URL
 
 const AQUAINT_EMAIL = 'gotwater@aquaint.io'
 const CALENDLY_URL = 'https://calendly.com/boone_rds/30min'
@@ -85,6 +85,7 @@ function App() {
   const [showBackToTop, setShowBackToTop] = useState(false)
   const [isContactOpen, setIsContactOpen] = useState(false)
   const [contactStatus, setContactStatus] = useState<ContactStatus>('idle')
+  const [turnstileToken, setTurnstileToken] = useState('')
 
   const currentYear = new Date().getFullYear()
 
@@ -97,12 +98,14 @@ function App() {
 
   const openContact = () => {
     setContactStatus('idle')
+    setTurnstileToken('')
     setIsContactOpen(true)
   }
 
   const closeContact = () => {
     setIsContactOpen(false)
     setContactStatus('idle')
+    setTurnstileToken('')
   }
 
   const handleModalBackdrop = (event: MouseEvent<HTMLDivElement>) => {
@@ -117,18 +120,39 @@ function App() {
     const form = event.currentTarget
     const formData = new FormData(form)
 
+    if (!CONTACT_GATEWAY_URL || !turnstileToken) {
+      setContactStatus('error')
+      return
+    }
+
     setContactStatus('submitting')
 
     try {
-      await fetch(GOOGLE_FORM_ENDPOINT, {
+      const response = await fetch(CONTACT_GATEWAY_URL, {
         method: 'POST',
-        mode: 'no-cors',
-        body: formData,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          source: 'aquaint',
+          name: String(formData.get('name') ?? '').trim(),
+          email: String(formData.get('email') ?? '').trim(),
+          company: String(formData.get('company') ?? '').trim(),
+          message: String(formData.get('message') ?? '').trim(),
+          website: String(formData.get('website') ?? '').trim(),
+          turnstileToken,
+        }),
       })
 
+      if (!response.ok) {
+        throw new Error(`Contact gateway returned ${response.status}`)
+      }
+
       form.reset()
+      setTurnstileToken('')
       setContactStatus('success')
-    } catch {
+    } catch (error) {
+      console.error('Contact submission failed:', error)
       setContactStatus('error')
     }
   }
@@ -735,13 +759,13 @@ function App() {
                     <label className="contact-field">
                       <span>Name</span>
 
-                      <input type="text" name="entry.167312055" autoComplete="name" required />
+                      <input type="text" name="name" autoComplete="name" required />
                     </label>
 
                     <label className="contact-field">
                       <span>Email</span>
 
-                      <input type="email" name="entry.1925134520" autoComplete="email" required />
+                      <input type="email" name="email" autoComplete="email" required />
                     </label>
                   </div>
 
@@ -751,14 +775,27 @@ function App() {
                       <small>Optional</small>
                     </span>
 
-                    <input type="text" name="entry.1422029915" autoComplete="organization" />
+                    <input type="text" name="company" autoComplete="organization" />
                   </label>
 
                   <label className="contact-field">
                     <span>Message</span>
 
-                    <textarea name="entry.2068458558" rows={6} required />
+                    <textarea name="message" rows={6} required />
                   </label>
+
+                  <label className="contact-honeypot" aria-hidden="true">
+                    <span>Website</span>
+                    <input
+                      type="text"
+                      name="website"
+                      tabIndex={-1}
+                      autoComplete="off"
+                      defaultValue=""
+                    />
+                  </label>
+
+                  <TurnstileWidget onToken={setTurnstileToken} />
 
                   {contactStatus === 'error' && (
                     <p className="contact-form-error" role="alert">
@@ -778,7 +815,8 @@ function App() {
                     <button
                       type="submit"
                       className="contact-submit-button"
-                      disabled={contactStatus === 'submitting'}
+                      disabled={contactStatus === 'submitting' || !turnstileToken}
+                      aria-busy={contactStatus === 'submitting'}
                     >
                       {contactStatus === 'submitting' ? 'Sending…' : 'Send Message'}
 
